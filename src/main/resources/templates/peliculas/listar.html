@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Películas</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Lista de Películas</h1>
+
+    <a th:href="@{/peliculas/nuevo}" class="btn btn-success mb-3">Crear nueva película</a>
+<a th:href="@{/index}" class="btn btn-success mb-3">Home</a>
+    <!-- Mostrar mensaje si la lista está vacía -->
+    <div th:if="${#lists.isEmpty(peliculas)}" class="alert alert-info">
+        No hay películas registradas.
+    </div>
+
+    <!-- Mostrar tabla solo si hay películas -->
+    <table class="table table-striped table-hover" th:if="${!#lists.isEmpty(peliculas)}">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Género</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="pelicula : ${peliculas}">
+            <td th:text="${pelicula.idPelicula}"></td>
+            <td th:text="${pelicula.titulo}"></td>
+            <td th:text="${pelicula.genero}"></td>
+            <td th:text="${pelicula.stock}"></td>
+            <td>
+                <a th:href="@{/peliculas/editar/{id}(id=${pelicula.idPelicula})}"
+                   class="btn btn-sm btn-primary me-1">Editar</a>
+                <a th:href="@{/peliculas/eliminar/{id}(id=${pelicula.idPelicula})}"
+                   class="btn btn-sm btn-danger"
+                   onclick="return confirm('¿Seguro de eliminar?');">Eliminar</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</div>
+
+<!-- Bootstrap JS (opcional para funcionalidades dinámicas) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

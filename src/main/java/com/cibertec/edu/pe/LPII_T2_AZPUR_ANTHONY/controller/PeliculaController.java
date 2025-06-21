@@ -2,9 +2,11 @@ package com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.controller;
 
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.model.Pelicula;
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.service.PeliculaService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -18,50 +20,55 @@ public class PeliculaController {
         this.peliculaService = peliculaService;
     }
 
-    // Mostrar lista de películas
     @GetMapping
-    public String listarPeliculas(Model model) {
+    public String listarPeliculas(Model model, @ModelAttribute("mensaje") String mensaje, @ModelAttribute("error") String error) {
         model.addAttribute("peliculas", peliculaService.listarPeliculas2());
+        if(!mensaje.isEmpty()) {
+            model.addAttribute("mensaje", mensaje);
+        }
+        if(!error.isEmpty()) {
+            model.addAttribute("error", error);
+        }
         return "peliculas/listar";
     }
 
-    // Mostrar formulario para nueva película
     @GetMapping("/nuevo")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("pelicula", new Pelicula());
         return "peliculas/crear";
     }
 
-    // Guardar película nueva
     @PostMapping
     public String guardarPelicula(@ModelAttribute Pelicula pelicula) {
         peliculaService.guardar(pelicula);
         return "redirect:/peliculas";
     }
 
-    // Mostrar formulario de edición
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable("id") Long id, Model model) {
         Optional<Pelicula> optionalPelicula = peliculaService.obtenerPorId(id);
         if (optionalPelicula.isPresent()) {
             model.addAttribute("pelicula", optionalPelicula.get());
-            return "peliculas/actualizar"; // templates/peliculas/editar.html
+            return "peliculas/actualizar";
         } else {
-            return "redirect:/peliculas"; // Si no se encuentra, redirige
+            return "redirect:/peliculas";
         }
     }
 
-    // Actualizar película
     @PostMapping("/actualizar")
     public String actualizarPelicula(@ModelAttribute Pelicula pelicula) {
-        peliculaService.guardar(pelicula); // Usa el mismo método que guardar
+        peliculaService.guardar(pelicula);
         return "redirect:/peliculas";
     }
 
-    // Eliminar película
     @GetMapping("/eliminar/{id}")
-    public String eliminarPelicula(@PathVariable("id") Long id) {
-        peliculaService.eliminar(id);
+    public String eliminarPelicula(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            peliculaService.eliminar(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Película eliminada correctamente.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "No se puede eliminar la película porque está asociada a un alquiler.");
+        }
         return "redirect:/peliculas";
     }
 }

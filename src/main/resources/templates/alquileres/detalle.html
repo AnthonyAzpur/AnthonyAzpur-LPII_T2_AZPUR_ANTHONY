@@ -1,37 +1,54 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-  <title>Detalle del Alquiler</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <meta charset="UTF-8" />
+  <title>Detalle del Alquiler - BLOCKBUSTER FAKE</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="bg-black text-warning">
+
+<nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
+  <div class="container-fluid justify-content-center">
+    <span class="navbar-brand fs-3 fw-bold">BLOCKBUSTER FAKE</span>
+  </div>
+</nav>
+
 <div class="container mt-5">
-  <h2>Detalle del Alquiler</h2>
-  <p><strong>ID:</strong> <span th:text="${alquiler.id}"></span></p>
-  <p><strong>Cliente:</strong> <span th:text="${alquiler.cliente.nombre}"></span></p>
-  <p><strong>Fecha:</strong> <span th:text="${alquiler.fecha}"></span></p>
-  <p><strong>Estado:</strong> <span th:text="${alquiler.estado}"></span></p>
-  <p><strong>Total:</strong> <span th:text="${alquiler.total}"></span></p>
+  <h2 class="mb-4 border-bottom border-warning pb-2">Detalle del Alquiler</h2>
 
-  <h4 class="mt-4">Películas Alquiladas</h4>
-  <table class="table table-bordered">
-    <thead class="table-light">
-      <tr>
-        <th>Título</th>
-        <th>Género</th>
-        <th>Cantidad</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="d : ${detalles}">
-        <td th:text="${d.pelicula.titulo}"></td>
-        <td th:text="${d.pelicula.genero}"></td>
-        <td th:text="${d.cantidad}"></td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="mb-4 p-4 bg-dark rounded border border-warning">
+    <p><strong>ID:</strong> <span th:text="${alquiler.id}" class="text-warning"></span></p>
+    <p><strong>Cliente:</strong> <span th:text="${alquiler.cliente.nombre}" class="text-warning"></span></p>
+    <p><strong>Fecha:</strong> <span th:text="${alquiler.fecha}" class="text-warning"></span></p>
+    <p><strong>Estado:</strong> <span th:text="${alquiler.estado}" class="text-warning"></span></p>
+    <p><strong>Total:</strong> <span th:text="${alquiler.total}" class="text-warning"></span></p>
+  </div>
 
-  <a href="/alquileres/lista" class="btn btn-secondary">Volver a la lista</a>
+  <h4 class="mb-3">Películas Alquiladas</h4>
+  <div class="table-responsive rounded-4 border border-warning p-3 bg-dark shadow">
+    <table class="table table-dark table-hover rounded text-center align-middle">
+      <thead class="table-warning text-dark">
+        <tr>
+          <th>Título</th>
+          <th>Género</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="d : ${detalles}">
+          <td th:text="${d.pelicula.titulo}"></td>
+          <td th:text="${d.pelicula.genero}"></td>
+          <td th:text="${d.cantidad}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-center mt-4">
+    <a href="/alquileres/lista" class="btn btn-outline-warning btn-lg px-5 rounded-pill">Volver a la lista</a>
+  </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

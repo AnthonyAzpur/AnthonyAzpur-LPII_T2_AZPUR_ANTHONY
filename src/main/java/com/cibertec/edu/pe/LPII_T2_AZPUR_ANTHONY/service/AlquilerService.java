@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.model.Alquiler;
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.model.DetalleAlquiler;
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.model.DetalleAlquilerId;
@@ -17,6 +15,7 @@ import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.model.Cliente;
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.repository.AlquilerRepository;
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.repository.DetalleAlquilerRepository;
 import com.cibertec.edu.pe.LPII_T2_AZPUR_ANTHONY.repository.PeliculaRepository;
+
 @Service
 public class AlquilerService {
 
@@ -64,13 +63,33 @@ public class AlquilerService {
 
         return alq;
     }
+
     public List<Alquiler> obtenerTodosAlquileres() {
-    return alquilerRepo.findAll();
-}
+        return alquilerRepo.findAll();
+    }
 
-public Alquiler obtenerAlquilerPorId(Long id) {
-    return alquilerRepo.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Alquiler no encontrado"));
-}
+    public Alquiler obtenerAlquilerPorId(Long id) {
+        return alquilerRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Alquiler no encontrado"));
+    }
 
+    // NUEVO: Método para procesar la devolución de un alquiler
+    public void procesarDevolucion(Long alquilerId) {
+        Alquiler alquiler = obtenerAlquilerPorId(alquilerId);
+
+        if (alquiler.getEstado() == EstadoAlquiler.DEVUELTO) {
+            throw new IllegalStateException("Este alquiler ya ha sido devuelto");
+        }
+
+        // Actualizar stock de cada película en el detalle del alquiler
+        for (DetalleAlquiler detalle : alquiler.getDetalles()) {
+            Pelicula pelicula = detalle.getPelicula();
+            pelicula.setStock(pelicula.getStock() + detalle.getCantidad());
+            peliculaRepo.save(pelicula);
+        }
+
+        // Cambiar estado del alquiler a DEVUELTO y guardar
+        alquiler.setEstado(EstadoAlquiler.DEVUELTO);
+        alquilerRepo.save(alquiler);
+    }
 }
